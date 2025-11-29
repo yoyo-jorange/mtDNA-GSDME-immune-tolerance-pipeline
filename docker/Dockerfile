@@ -59,8 +59,11 @@ RUN pip3 install --no-cache-dir --upgrade pip && \
     dowhy==0.11.1 \
     causalml==0.15.0 \
     econml==0.15.1 \
+    # 🔥 GDC API直接访问（替换gdc-client）
+    requests==2.32.3 \
+    beautifulsoup4==4.12.3 \
+    lxml==5.3.0 \
     # TCGA/GEO 下载
-    gdc-client==2.4.1 \
     GEOparse==1.4.0 \
     # 空间解卷积 Python 接口
     tangram-py==0.2.0 \
