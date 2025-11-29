@@ -1,5 +1,5 @@
 ############ BASE IMAGE ——— rocker with full R toolchain ############
-FROM rocker/r-ver:4.3.1
+FROM ghcr.io/rocker-org/r-ver:4.3.1
 
 # Avoid tzdata prompt issue
 ENV DEBIAN_FRONTEND=noninteractive
