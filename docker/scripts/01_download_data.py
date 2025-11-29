@@ -1,29 +1,83 @@
+import argparse
+import csv
+import hashlib
 import yaml
-import pandas as pd
 from pathlib import Path
-import gdc_client
-import GEOparse
+import requests
+from requests.adapters import HTTPAdapter, Retry
 
-def download_visium_hd_12847():
-    """下载10x 2025公共Visium HD数据集"""
-    # 你的具体链接：https://www.10xgenomics.com/datasets
-    urls = [
-        "https://cf.10xgenomics.com/samples/cell-exp/3.0.2/Visium_HD_Human_Breast_Cancer/Visium_HD_Human_Breast_Cancer_raw_feature_bc_matrix.h5",
-        # ... 继续你的12,847个样本链接
-    ]
-    return urls
+
+def session_with_retry():
+    retries = Retry(
+        total=5,
+        backoff_factor=0.5,
+        status_forcelist=[429, 500, 502, 503, 504],
+    )
+    s = requests.Session()
+    s.mount("https://", HTTPAdapter(max_retries=retries))
+    return s
+
+
+def verify_md5(path, md5):
+    if not md5:
+        return True
+    h = hashlib.md5()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest() == md5
+
+
+def download_file(url, out_path):
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    session = session_with_retry()
+
+    if out_path.exists():
+        print(f"[SKIP] Exists: {out_path}")
+        return
+
+    print(f"[DOWNLOAD] {url} → {out_path}")
+    with session.get(url, stream=True, timeout=60) as r:
+        r.raise_for_status()
+        with open(out_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=1_048_576):
+                if chunk:
+                    f.write(chunk)
+
+
+def run_download(config):
+    base = Path(config["base_dir"])
+    raw_dir = base / config["raw_data_dir"]
+    csv_path = Path("scripts/download_links.csv")
+
+    print(f"[INFO] Reading download list: {csv_path}")
+    with open(csv_path) as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            file_id = row["id"]
+            url = row["url"]
+            md5 = row.get("md5", None)
+
+            out_path = raw_dir / f"{file_id}"
+
+            download_file(url, out_path)
+
+            if md5 and not verify_md5(out_path, md5):
+                print(f"[ERROR] MD5 mismatch: {file_id}")
+            else:
+                print(f"[OK] {file_id} downloaded.")
+
 
 def main():
-    with open("config/paths.yaml") as f:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", required=True)
+    args = parser.parse_args()
+
+    with open(args.config) as f:
         config = yaml.safe_load(f)
-    
-    raw_dir = Path(config["data_raw"])
-    raw_dir.mkdir(exist_ok=True)
-    
-    # Visium HD (核心)
-    if config["download"]["visium_hd"]:
-        urls = download_visium_hd_12847()
-        for i, url in enumerate(urls[:5]):  # 先下载5个测试
-            outpath = raw_dir / f"visium_hd/sample_{i+1}.h5"
-            # 下载逻辑...
-            print(f"下载: {url} -> {outpath}")
+
+    run_download(config)
+
+
+if __name__ == "__main__":
+    main()
