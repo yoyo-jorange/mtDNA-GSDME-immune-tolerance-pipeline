@@ -37,37 +37,35 @@ RUN apt-get update && apt-get install -y \
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 # 安装核心 Python 包（单细胞 + 空间组学 + 因果推断）
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir \
-    numpy==1.26.4 \
-    pandas==2.2.2 \
-    scipy==1.13.1 \
-    scikit-learn==1.5.1 \
-    matplotlib==3.9.2 \
-    seaborn==0.13.2 \
-    plotly==5.22.0 \
-    scanpy==1.10.2 \
-    anndata==0.11.3 \
-    squidpy==1.5.0 \
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    numpy==1.21.6 \
+    pandas==1.4.2 \
+    scipy==1.8.0 \
+    matplotlib==3.5.3 \
+    seaborn==0.11.2
+
+# 🔥 第二层：单细胞核心（官方兼容组合）
+RUN pip install --no-cache-dir \
+    scanpy==1.9.1 \
+    anndata==0.8.0
+
+# 🔥 第三层：空间分析（Tangram官方推荐）
+RUN pip install --no-cache-dir \
+    squidpy==1.2.2 \
+    tangram-sc==1.0.2
+
+# 🔥 第四层：其他分析包
+RUN pip install --no-cache-dir \
     harmonypy==0.0.10 \
     gseapy==1.1.3 \
-    lifelines==0.27.8 \
-    statsmodels==0.14.2 \
-    jupyterlab==4.2.5 \
-    nbconvert==7.16.3 \
-    # 因果推断
-    dowhy==0.11.1 \
-    causalml==0.15.0 \
-    econml==0.15.1 \
-    # 🔥 GDC API直接访问（替换gdc-client）
+    GEOparse==2.0.4 \
     requests==2.32.3 \
     beautifulsoup4==4.12.3 \
-    lxml==5.3.0 \
-    # TCGA/GEO 下载
-    GEOparse==2.0.4 \
-    # 空间解卷积 Python 接口
-    tangram-sc==1.0.4 \
-    && pip3 cache purge
+    plotly==5.22.0 \
+    jupyterlab==4.2.5 \
+    dowhy==0.11.1 \
+    lifelines==0.27.8
 
 # 安装核心 R 包（Seurat + 空间解卷积 + GSVA）
 RUN R -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); \
