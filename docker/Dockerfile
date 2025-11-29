@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gfortran \
     cmake \
+    pkg-config \
+    git \
     ## libraries for R / Bioconductor / Seurat / GSVA
     libxml2-dev \
     libssl-dev \
@@ -26,16 +28,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2-dev \
     libxt-dev \
     libx11-dev \
+    ## spatialDWLS / RCTD / Giotto 必需库
     libgsl-dev \
     libgeos-dev \
     libglpk-dev \
     libgdal-dev \
-    libhdf5-dev \
+    libgit2-dev \
+    liblapack-dev \
+    libblas-dev \
+    libpcre2-dev \
     ## python basics
     python3 python3-dev python3-pip \
     ## cleanup
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 
 
 ###########################
