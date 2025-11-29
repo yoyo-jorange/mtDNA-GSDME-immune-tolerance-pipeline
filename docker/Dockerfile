@@ -66,7 +66,7 @@ RUN pip3 install --no-cache-dir --upgrade pip && \
     # TCGA/GEO 下载
     GEOparse==2.0.4 \
     # 空间解卷积 Python 接口
-    tangram-py==0.2.0 \
+    tangram-py==0.4.0 \
     && pip3 cache purge
 
 # 安装核心 R 包（Seurat + 空间解卷积 + GSVA）
