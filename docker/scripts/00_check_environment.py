@@ -1,36 +1,31 @@
-import os
-import shutil
-import psutil  # 如果没有会报错，后续可加到 Dockerfile
-from datetime import datetime
+import yaml
+import psutil
+import subprocess
+import sys
+from pathlib import Path
 
-def check_disk_space(min_gb=50):
-    usage = psutil.disk_usage("/")
-    free_gb = usage.free / (1024**3)
-    ok = free_gb >= min_gb
-    return ok, free_gb
-
-def main():
-    os.makedirs("results/reports", exist_ok=True)
-    report_path = "results/reports/00_check_environment.txt"
-
-    lines = []
-    lines.append(f"检查时间: {datetime.now()}")
-    lines.append("=== 基本环境检查 ===")
-
+def check_all():
+    report = {"status": "OK", "checks": []}
+    
     # 磁盘空间
-    ok_disk, free_gb = check_disk_space()
-    if ok_disk:
-        lines.append(f"[通过] 剩余磁盘空间约 {free_gb:.1f} GB")
-    else:
-        lines.append(f"[警告] 剩余磁盘空间仅 {free_gb:.1f} GB，建议至少 50 GB")
-
-    # Docker 这里只在容器外不检查，假定已能运行到这里
-    lines.append("[提示] 当前已在 Docker 容器内运行，基础环境已就绪。")
-
-    with open(report_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-
-    print("\n".join(lines))
+    disk = psutil.disk_usage('/')
+    free_gb = disk.free / (1024**3)
+    report["checks"].append({"disk_free_gb": round(free_gb, 1), "sufficient": free_gb > 100})
+    
+    # 内存
+    mem = psutil.virtual_memory()
+    report["checks"].append({"memory_gb": round(mem.total / (1024**3), 1)})
+    
+    # R/Python版本
+    report["checks"].append({"R_version": subprocess.run(["R", "--version"], capture_output=True, text=True).stderr.split('\n')[0]})
+    report["checks"].append({"python_version": sys.version})
+    
+    # 关键包检查
+    r_pkgs = ["Seurat", "Cell2location", "GSVA"]
+    py_pkgs = ["scanpy", "dowhy", "causalml"]
+    
+    return report
 
 if __name__ == "__main__":
-    main()
+    report = check_all()
+    print(yaml.dump(report, default_flow_style=False, allow_unicode=True))
