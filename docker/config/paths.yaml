@@ -1,0 +1,45 @@
+# 项目根目录（自动适配）
+base_dir: "/workspace"
+
+# 数据目录
+data_raw: "data_raw"
+data_processed: "data_processed"
+results: "results"
+
+# 下载选项（可单独开关）
+download:
+  visium_hd: true      # 10x Visium HD (12,847例)
+  tcga: true           # TCGA pan-cancer
+  cptac: true          # CPTAC蛋白质组
+  geo_scrna: true      # GEO单细胞
+  geo_cfdna: true      # GEO cfDNA (GSE211732等)
+  immunotherapy: true  # PMID:37909230队列
+
+# 计算参数
+scores:
+  mt_genes_prefix: "MT-"           # 线粒体基因前缀
+  oxphos_geneset: "data_raw/oxphos_geneset.txt"  # OXPHOS基因集
+  pyro_genes:
+    numerator: ["GSDME", "CASP3", "IL1B", "IL18"]
+    denominator: ["GSDMD", "CASP1"]
+
+# 空间解卷积细胞类型（18种）
+cell_types:
+  - Tumor_cells
+  - Tumor_stem
+  - Macrophages_GSDME_pos
+  - Macrophages_GSDME_neg
+  - Treg
+  - MDSC
+  - CD8_T_exhausted
+  - CD8_T_active
+  - CD4_T_helper
+  - B_cells
+  - NK_cells
+  - Endothelial
+  - Fibroblasts
+  - Neutrophils
+  - Dendritic_cells
+  - Mast_cells
+  - Plasma_cells
+  - Other_immune
