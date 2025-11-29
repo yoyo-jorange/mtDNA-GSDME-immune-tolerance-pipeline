@@ -49,7 +49,7 @@ RUN pip3 install --no-cache-dir --upgrade pip && \
     scanpy==1.10.2 \
     anndata==0.11.3 \
     squidpy==1.5.0 \
-    harmonypy==1.2.0 \
+    harmonypy==0.0.10 \
     gseapy==1.1.3 \
     lifelines==0.27.8 \
     statsmodels==0.14.2 \
