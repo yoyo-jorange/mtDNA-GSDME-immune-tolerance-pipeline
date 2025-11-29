@@ -1,0 +1,29 @@
+#!/usr/bin/env Rscript
+library(TCGAbiolinks)
+library(survival)
+library(survminer)
+
+# TCGA泛癌验证
+tcga pancancer_analysis <- function() {
+  # 下载TCGA数据
+  query <- GDCquery(project = "TCGA-PAAD",  # 胰腺癌示例
+                   data.category = "Transcriptome Profiling",
+                   data.type = "Gene Expression Quantification")
+  
+  # 计算两个score
+  scores <- calculate_scores(query$results[[1]])
+  
+  # 预后分析
+  fit <- survfit(Surv(time, status) ~ high_nonCanonicalPyroScore, data = clinical)
+  ggsurvplot(fit, pval = TRUE)
+  
+  # 免疫治疗队列验证（PMID:37909230）
+  immunotherapy_cohort <- read.csv("data_raw/immunotherapy/PMID_37909230.csv")
+  orr_high <- mean(immunotherapy_cohort$ORR[scores$nonCanonicalPyroScore > median])
+  orr_low <- mean(immunotherapy_cohort$ORR[scores$nonCanonicalPyroScore <= median])
+  
+  cat("高nonCanonicalPyroScore组ORR:", orr_high, "%\n")
+  cat("低nonCanonicalPyroScore组ORR:", orr_low, "%\n")
+}
+
+pancancer_analysis()
