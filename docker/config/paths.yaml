@@ -1,5 +1,5 @@
 # 项目根目录（自动适配）
-base_dir: "/workspace"
+base_dir: "/path/to/mtDNA_pipeline"
 
 # 数据目录
 data_raw: "data_raw"
