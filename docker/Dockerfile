@@ -64,7 +64,7 @@ RUN pip3 install --no-cache-dir --upgrade pip && \
     beautifulsoup4==4.12.3 \
     lxml==5.3.0 \
     # TCGA/GEO 下载
-    GEOparse==1.4.0 \
+    GEOparse==2.0.4 \
     # 空间解卷积 Python 接口
     tangram-py==0.2.0 \
     && pip3 cache purge
