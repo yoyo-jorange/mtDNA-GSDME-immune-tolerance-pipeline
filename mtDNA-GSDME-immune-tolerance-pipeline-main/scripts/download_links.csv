@@ -1,0 +1,4 @@
+url,rel_path
+https://example.com/visium_hd_sample1.tar.gz,10x/visium_hd/sample1.tar.gz
+https://example.com/scRNA_sample1.h5ad,scrna/sample1.h5ad
+

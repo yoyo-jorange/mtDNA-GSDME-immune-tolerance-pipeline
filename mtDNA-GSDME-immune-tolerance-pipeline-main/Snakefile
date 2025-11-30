@@ -1,0 +1,138 @@
+#########################################
+# mtDNA-GSDME Immune Tolerance Pipeline
+# Snakemake Workflow — 完全适配 Docker + /workspace + 当前 paths.yaml
+#########################################
+import os
+from pathlib import Path
+
+# 固定加载容器内绝对路径的 config（不要改！）
+configfile: 
+  - "/workspace/config/paths.yaml"
+  - "/workspace/config/config.yaml"
+  - "/workspace/config/samples.yaml"
+
+# 路径定义 —— 与你的 paths.yaml 一一对应
+BASE = Path(config["base_dir"])                    # /workspace
+RAW  = BASE / config["data_raw"]                   # /workspace/data_raw
+PROC = BASE / config["data_processed"]             # /workspace/data_processed
+RES  = BASE / config["results"]                    # /workspace/results
+LOGDIR = RES / "logs"
+REPORTDIR = RES / "reports"
+
+# 自动创建必要目录（Docker 中非常重要）
+for d in [LOGDIR, RES / "flags", RES / "mtLeakScore", RES / "nonCanonicalPyro", 
+          RES / "spatial_deconvolution", REPORTDIR]:
+    os.makedirs(d, exist_ok=True)
+
+shell.executable("/bin/bash")
+
+#########################################
+# Rule: all
+#########################################
+rule all:
+    input:
+        RES / "mtLeakScore/mtLeakScore.tsv",
+        RES / "nonCanonicalPyro/nonCanonicalPyroScore.tsv",
+        RES / "spatial_deconvolution/output.rds",
+        RES / "reports/A_quicklook_results.html"
+
+#########################################
+# 00 — Environment check
+#########################################
+rule check_environment:
+    output:
+        touch(RES / "flags/00_check_environment.done")
+    log:
+        LOGDIR / "00_check_environment.log"
+    shell:
+        "python /workspace/scripts/00_check_environment.py --config {configfile} > {log} 2>&1"
+
+#########################################
+# 01 — Download datasets
+#########################################
+rule download_data:
+    input:
+        RES / "flags/00_check_environment.done"
+    output:
+        touch(RES / "flags/01_download_data.done")
+    log:
+        LOGDIR / "01_download_data.log"
+    shell:
+        "python /workspace/scripts/01_download_data.py --config {configfile} > {log} 2>&1"
+
+#########################################
+# 02 — Preprocess spatial data
+#########################################
+rule preprocess_spatial:
+    input:
+        RES / "flags/01_download_data.done"
+    output:
+        PROC / "spatial_preprocessed.h5ad"
+    log:
+        LOGDIR / "02_preprocess_spatial.log"
+    shell:
+        "python /workspace/scripts/02_preprocess_spatial.py "
+        "--config {configfile} --output {output} > {log} 2>&1"
+
+#########################################
+# 03 — Preprocess scRNA-seq
+#########################################
+rule preprocess_scrna:
+    input:
+        PROC / "spatial_preprocessed.h5ad"
+    output:
+        PROC / "scRNA_preprocessed.h5ad"
+    log:
+        LOGDIR / "03_preprocess_scRNA.log"
+    shell:
+        "python /workspace/scripts/03_preprocess_scRNA.py "
+        "--config {configfile} --input {input} --output {output} > {log} 2>&1"
+
+#########################################
+# 10 — mtLeakScore
+#########################################
+rule mtLeakScore:
+    input:
+        PROC / "scRNA_preprocessed.h5ad"
+    output:
+        RES / "mtLeakScore/mtLeakScore.tsv"
+    log:
+        LOGDIR / "10_mtLeakScore.log"
+    shell:
+        "python /workspace/scripts/10_compute_mtLeakScore.py --config {configfile} > {log} 2>&1"
+
+#########################################
+# 11 — nonCanonicalPyroScore
+#########################################
+rule nonCanonicalPyroScore:
+    input:
+        PROC / "scRNA_preprocessed.h5ad"
+    output:
+        RES / "nonCanonicalPyro/nonCanonicalPyroScore.tsv"
+    log:
+        LOGDIR / "11_nonCanonicalPyro.log"
+    shell:
+        "python /workspace/scripts/11_compute_nonCanonicalPyroScore.py --config {configfile} > {log} 2>&1"
+
+#########################################
+# 20 — Spatial Deconvolution (R)
+#########################################
+rule spatial_deconvolution:
+    input:
+        PROC / "spatial_preprocessed.h5ad",
+        PROC / "scRNA_preprocessed.h5ad"
+    output:
+        RES / "spatial_deconvolution/output.rds"
+    log:
+        LOGDIR / "20_spatial_deconvolution.log"
+    shell:
+        "Rscript /workspace/scripts/20_spatial_deconvolution.R {configfile} > {log} 2>&1"
+
+#########################################
+# Final HTML report
+#########################################
+rule final_report:
+    input:
+        RES / "spatial_deconvolution/output.rds"
+    output:
+        RES / "

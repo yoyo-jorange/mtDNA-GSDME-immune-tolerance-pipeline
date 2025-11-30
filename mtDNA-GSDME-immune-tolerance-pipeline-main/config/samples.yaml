@@ -1,0 +1,14 @@
+# =============================================================================
+# config/samples.yaml
+# 样本列表（目前你只有一套数据，先写一个，后面直接复制多行即可）
+# =============================================================================
+
+samples:
+  main:
+    name: "CRC_Immunotherapy_Cohort"        # 显示名称
+    spatial_h5ad: "spatial_preprocessed.h5ad"   # 位于 data_processed/
+    scrna_h5ad:   "scRNA_preprocessed.h5ad"     # 位于 data_processed/
+    species: "human"                            # human / mouse
+    tissue: "Colorectal Cancer"
+    treatment: "anti-PD1 + chemotherapy"
+    pmid: "37909230"
