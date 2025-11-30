@@ -6,7 +6,10 @@ import os
 from pathlib import Path
 
 # 固定加载容器内绝对路径的 config（不要改！）
-configfile: "/workspace/config/paths.yaml"
+configfile: 
+  - "/workspace/config/paths.yaml"
+  - "/workspace/config/config.yaml"
+  - "/workspace/config/samples.yaml"
 
 # 路径定义 —— 与你的 paths.yaml 一一对应
 BASE = Path(config["base_dir"])                    # /workspace
