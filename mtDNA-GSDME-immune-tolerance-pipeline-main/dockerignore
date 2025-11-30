@@ -1,0 +1,63 @@
+# Git metadata
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter notebooks cache
+.ipynb_checkpoints/
+
+# R temporary files
+.Rhistory
+.RData
+.Ruserdata
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Data directories (避免把大数据打进 Docker build context)
+data/
+data_raw/
+raw_data/
+data_processed/
+results/
+output/
+tmp/
+temp/
+cache/
+
+# Large files
+*.h5
+*.h5ad
+*.loom
+*.mtx
+*.gz
+*.zip
+*.tar
+*.tar.gz
+
+# Logs
+logs/
+*.log
+
+# Virtual environments
+venv/
+.env/
+.envrc/
+
+# Docker build artifacts
+docker/*.sh
+docker/*.bat
+docker/*.ps1
+
+# Anything else unneeded for image
+*.Rproj
+*.bak
+*.tmp
