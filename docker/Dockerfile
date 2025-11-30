@@ -109,7 +109,7 @@ RUN git config --global url."https://hub.fastgit.xyz/".insteadOf "https://github
 
 
 # Giotto (3.1.0)
-RUN R -e "remotes::install_github('lazyman/Giotto', dependencies=TRUE, upgrade=FALSE)"
+RUN R -e "remotes::install_github('drieslab/Giotto', dependencies=TRUE, upgrade=FALSE)"
 
 
 ##############################
