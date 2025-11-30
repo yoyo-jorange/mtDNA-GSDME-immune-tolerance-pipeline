@@ -1,74 +1,37 @@
-# =============================================================================
-# config/config.yaml
-# 运行时参数配置（不含路径，路径全部走 paths.yaml）
-# =============================================================================
+# ==========================================
+# Pipeline parameters for scRNA + Spatial + Causal
+# ==========================================
 
-# ---------------------- 下载开关 ----------------------
-download:
-  visium_hd: true          # 10x Visium HD 大队列（~1.2万例）
-  tcga: true               # TCGA pan-cancer (33 cancer types)
-  cptac: true              # CPTAC 蛋白质组匹配队列
-  geo_scrna: true          # 公共单细胞数据集（用于参考）
-  geo_cfdna: true          # cfDNA 数据（如 GSE211732）
-  immunotherapy: true      # PMID:37909230 关键免疫治疗队列
+# General
+n_workers: 8
+memory_gb: 64
 
-# ---------------------- 计算参数 ----------------------
-scores:
-  mt_genes_prefix: "MT-"                                   # 人：MT-   小鼠：mt-
-  oxphos_geneset: "data_raw/oxphos_geneset.txt"            # 相对 paths.yaml 中的 data_raw
-  pyro_genes:
-    numerator:   ["GSDME", "CASP3", "IL1B", "IL18"]        # GSDME 通路（非经典焦亡）
-    denominator: ["GSDMD", "CASP1"]                        # 经典焦亡作为分母
+# scRNA filter thresholds
+min_genes: 300
+min_cells: 3
+percent_mt_cutoff: 5
 
-# ---------------------- 空间解卷积细胞类型（顺序不能变！）----------------------
-cell_types:
-  - Tumor_cells
-  - Tumor_stem
-  - Macrophages_GSDME_pos
-  - Macrophages_GSDME_neg
-  - Treg
-  - MDSC
-  - CD8_T_exhausted
-  - CD8_T_active
-  - CD4_T_helper
-  - B_cells
-  - NK_cells
-  - Endothelial
-  - Fibroblasts
-  - Neutrophils
-  - Dendritic_cells
-  - Mast_cells
-  - Plasma_cells
-  - Other_immune
+# Seurat
+resolution: 1.0
+n_pcs: 30
 
-# ---------------------- 预处理过滤参数 ----------------------
-preprocess:
-  min_genes: 200
-  max_genes: 6000
-  min_counts: 500
-  max_counts: 40000
-  percent_mt_max: 20
-  percent_ribo_min: 10
-  doublet_scrublet_threshold: 0.25
+# Spatial mapping (cell2location)
+c2l_n_iters: 30000
 
-# ---------------------- 空间解卷积参数（R/cell2location 或 RCTD）----------------------
-deconv:
-  method: "cell2location"        # 可选：cell2location, tangram, rctd, spotlight
-  n_cells_per_location: 8
-  detection_alpha: 200
-  max_epochs: 30000
-  use_gpu: false                 # Docker CPU 镜像，强制 false
+# Spatial mapping (RCTD)
+rctd_max_cores: 8
+rctd_doublet_mode: "full"
 
-# ---------------------- 绘图与报告参数 ----------------------
-plot:
-  dpi: 300
-  figsize_violin: [10, 6]
-  figsize_umap: [8, 8]
-  palette: "Set2"
+# DWLS parameters
+dwls_min_gene: 50
 
-# ---------------------- Snakemake 推荐参数（可选）----------------------
-snakemake:
-  cores: 16
-  latency_wait: 60
-  keep_going: true
-  restart_times: 3
+# GSVA / pathway scoring
+gsva_method: "gsva"
+
+# Causal inference
+treatment: "GSDME_score"
+outcome: "immune_tolerance_score"
+confounders:
+  - age
+  - gender
+  - batch
