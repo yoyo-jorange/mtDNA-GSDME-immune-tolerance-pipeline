@@ -1,78 +1,29 @@
-# =============================================================================
-# paths.yaml —— 适配 Docker + Snakemake 的路径配置文件
-# 在容器内部，项目被挂载/复制到 /workspace，所以所有路径都以 /workspace 为根
-# =============================================================================
+# ================================================
+# Paths for mtDNA-GSDME Immune Tolerance Pipeline
+# ================================================
 
-# 项目根目录（容器内固定路径，不要改！）
+# Root directory inside Docker
 base_dir: "/workspace"
 
-# =============================================================================
-# 主要数据与结果目录（推荐使用相对路径，方便 host 挂载）
-# =============================================================================
-data_raw:       "data_raw"          # → /workspace/data_raw
-data_processed: "data_processed"    # → /workspace/data_processed
-results:        "results"           # → /workspace/results
-logs:           "logs"              # → /workspace/logs  (Snakemake 自动生成)
-reports:        "reports"           # → /workspace/reports
+# Raw data directories
+data_raw: "data_raw"
+scrna_raw: "data_raw/scRNA"
+spatial_raw: "data_raw/spatial"
 
-# =============================================================================
-# 你可以把上面几个目录在运行容器时用 -v 挂载到宿主机真实路径，例如：
-# docker run -v /home/user/myproject/data_raw:/workspace/data_raw \
-#            -v /home/user/myproject/results:/workspace/results ...
-# =============================================================================
+# Processed data directories
+data_processed: "data_processed"
+scrna_processed: "data_processed/scRNA"
+spatial_processed: "data_processed/spatial"
 
-# =============================================================================
-# 下载开关（保持不变，直接在 workflow 里用）
-# =============================================================================
-download:
-  visium_hd:       true   # 10x Visium HD (12,847例)
-  tcga:            true   # TCGA pan-cancer
-  cptac:           true   # CPTAC 蛋白质组
-  geo_scrna:       true   # GEO 单细胞数据集
-  geo_cfdna:       true   # GEO cfDNA (GSE211732 等)
-  immunotherapy:   true   # PMID:37909230 队列
+# Output & results
+results: "results"
+figures: "results/figures"
+logs: "results/logs"
 
-# =============================================================================
-# 计算参数（保持不变）
-# =============================================================================
-scores:
-  mt_genes_prefix: "MT-"                                   # 人 MT- / 小鼠 mt-
-  oxphos_geneset:  "data_raw/oxphos_geneset.txt"           # 相对路径，容器内实际为 /workspace/data_raw/...
-  pyro_genes:
-    numerator:     ["GSDME", "CASP3", "IL1B", "IL18"]
-    denominator:   ["GSDMD", "CASP1"]
+# Reference files
+reference: "reference"
+gene_sets: "reference/gene_sets"
+markers: "reference/markers.csv"
 
-# =============================================================================
-# 空间解卷积用到的细胞类型（18种，顺序不能乱）
-# =============================================================================
-cell_types:
-  - Tumor_cells
-  - Tumor_stem
-  - Macrophages_GSDME_pos
-  - Macrophages_GSDME_neg
-  - Treg
-  - MDSC
-  - CD8_T_exhausted
-  - CD8_T_active
-  - CD4_T_helper
-  - B_cells
-  - NK_cells
-  - Endothelial
-  - Fibroblasts
-  - Neutrophils
-  - Dendritic_cells
-  - Mast_cells
-  - Plasma_cells
-  - Other_immune
-
-# =============================================================================
-# Snakemake 额外推荐配置（可直接写在 config 或单独的 config.yaml 里）
-# =============================================================================
-# 如果你还有 config.yaml，可以再加下面这些（paths.yaml 里也可以放）：
-# snakemake:
-#   cores: 32
-#   latency_wait: 60
-#   restart_times: 3
-#   use_conda: true
-#   use_singularity: true
-#   singularity_args: "--bind /data,/scratch"
+# Credentials (not committed)
+credential_file: "~/.mtDNA_pipeline/credentials.yaml"
