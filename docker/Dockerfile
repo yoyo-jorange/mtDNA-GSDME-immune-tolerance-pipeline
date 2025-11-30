@@ -88,7 +88,7 @@ RUN R -e "install.packages('glmnet', repos='https://cloud.r-project.org')"
 
 
 # RCTD
-RUN R -e "remotes::install_github('dmcable/RCTD', dependencies=TRUE, upgrade=FALSE)"
+RUN R -e "remotes::install_github('dmcable/RCTD@e2e898a04dbbfbbb0f1f28fef7840ccf44a8a893', dependencies=TRUE, upgrade=FALSE)"
 
 # spatialDWLS (now safe)
 RUN R -e "remotes::install_github('dmcable/spatialDWLS', dependencies=TRUE, upgrade=FALSE)"
