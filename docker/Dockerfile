@@ -101,6 +101,7 @@ RUN R -e "remotes::install_github('dmcable/spacexr', dependencies=TRUE, upgrade=
 
 
 # spatialDWLS (now safe)
+# spatialDWLS replacement — DWLS (active repo)
 RUN R -e "remotes::install_github('JEFworks-Lab/DWLS', dependencies=TRUE, upgrade=FALSE)"
 
 
