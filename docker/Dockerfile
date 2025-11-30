@@ -105,6 +105,9 @@ RUN R -e "remotes::install_github('dmcable/spacexr', dependencies=TRUE, upgrade=
 RUN git config --global url."https://ghproxy.com/https://github.com/".insteadOf "https://github.com/"
 
 
+RUN git config --global url."https://hub.fastgit.xyz/".insteadOf "https://github.com/"
+
+
 # Giotto (3.1.0)
 RUN R -e "remotes::install_github('lzheimer/Giotto', ref='3.1.0', dependencies=TRUE, upgrade=FALSE)"
 
