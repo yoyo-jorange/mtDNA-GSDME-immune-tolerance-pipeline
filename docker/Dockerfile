@@ -80,7 +80,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Patch for RCTD — fix BLAS/LAPACK linking issues
-RUN echo "FLIBS=-lblas -llapack" >> /usr/lib/R/etc/Makeconf
+RUN echo "FLIBS=-lblas -llapack" >> /usr/local/lib/R/etc/Makeconf
 
 # Install spam and glmnet manually (RCTD critical deps)
 RUN R -e "install.packages('spam', repos='https://cloud.r-project.org')"
