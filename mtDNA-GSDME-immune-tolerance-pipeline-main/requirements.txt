@@ -1,0 +1,30 @@
+# -------- Core scientific stack --------
+numpy
+pandas
+scipy
+scikit-learn
+matplotlib
+seaborn
+
+# -------- Single-cell & spatial --------
+anndata
+scanpy
+squidpy
+
+# -------- Torch & pyro (CPU) --------
+torch --index-url https://download.pytorch.org/whl/cpu
+pyro-ppl
+
+# -------- Spatial deconvolution --------
+cell2location
+tangram-sc
+
+# -------- Causal inference --------
+causalml
+dowhy
+econml
+
+# -------- Notebook environment --------
+jupyter
+jupyterlab
+ipykernel
