@@ -86,6 +86,15 @@ RUN echo "FLIBS=-lblas -llapack" >> /usr/local/lib/R/etc/Makeconf
 RUN R -e "install.packages('spam', repos='https://cloud.r-project.org')"
 RUN R -e "install.packages('glmnet', repos='https://cloud.r-project.org')"
 
+# Ensure remotes is installed (critical)
+RUN R -e "install.packages('remotes', repos='https://cloud.r-project.org')"
+
+# Ensure devtools exists (some packages need it)
+RUN R -e "install.packages('devtools', repos='https://cloud.r-project.org')"
+
+# Ensure git & libgit2 are available (remotes backend)
+RUN apt-get update && apt-get install -y --no-install-recommends git libgit2-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 # RCTD
 RUN R -e "remotes::install_github('dmcable/RCTD@e2e898a04dbbfbbb0f1f28fef7840ccf44a8a893', dependencies=TRUE, upgrade=FALSE)"
