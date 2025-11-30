@@ -1,0 +1,44 @@
+# =========================================================
+#  Path & environment configuration for mtDNA-GSDME pipeline
+# =========================================================
+
+# ---- Base directory inside Docker container ----
+# DO NOT change when running inside Docker.
+# All scripts assume /workspace is the project root.
+base_dir: "/workspace"
+
+
+# ---- Raw / processed data paths ----
+data_raw_dir: "data_raw"
+data_processed_dir: "data_processed"
+results_dir: "results"
+figures_dir: "results/figures"
+
+
+# ---- Reference data paths (optional / if used in scripts) ----
+reference_dir: "reference"
+celltype_markers: "reference/markers.csv"
+gene_sets_dir: "reference/gene_sets"
+
+
+# ---- Spatial transcriptomics paths ----
+spatial_raw_dir: "data_raw/spatial"
+spatial_processed_dir: "data_processed/spatial"
+spatial_results_dir: "results/spatial"
+
+
+# ---- Single-cell (scRNA-seq) paths ----
+scrna_raw_dir: "data_raw/scRNA"
+scrna_processed_dir: "data_processed/scRNA"
+scrna_results_dir: "results/scrna"
+
+
+# ---- Working parameters ----
+n_workers: 8
+memory_gb: 64
+
+
+# ---- Optional: credentials for data download ----
+# Do NOT commit real tokens to GitHub.
+# Put them in ~/.mtDNA_pipeline/credentials.yaml
+credential_path: "~/.mtDNA_pipeline/credentials.yaml"
