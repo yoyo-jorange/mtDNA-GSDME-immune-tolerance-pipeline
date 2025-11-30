@@ -137,6 +137,51 @@ RUN pip3 install tangram-sc
 # causal inference
 RUN pip3 install causalml dowhy econml
 
+##############################
+# Snakemake + Workflow Tools
+##############################
+# 1. 安装 Miniconda（轻量、不会和系统 Python 冲突）
+ENV CONDA_DIR=/opt/conda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p $CONDA_DIR && \
+    rm ~/miniconda.sh && \
+    $CONDA_DIR/bin/conda clean -tipsy
+ENV PATH="$CONDA_DIR/bin:$PATH"
+
+# 2. 创建专用的 snakemake conda 环境（推荐做法）
+RUN conda create -y -n snakemake python=3.11 snakemake=8.20.0 \
+    # 常用插件与依赖
+    drmaa \
+    graphviz \
+    pydot \
+    jinja2 \
+    requests \
+    pandas \
+    tabulate \
+    # 绘图支持（snakemake --report）
+    matplotlib \
+    seaborn \
+    # 集群提交常用
+    clusterstatus \
+    && conda clean -afy
+
+# 3. 把 conda 环境加入 PATH（以后直接 snakemake 就能用）
+ENV PATH="$CONDA_DIR/envs/snakemake/bin:$PATH"
+
+# 4. 可选：安装 singularity/apptainer（很多空间流程用 singularity 拉镜像）
+#    如果你服务器没有 fuse-overlayfs 权限，可以只装 apptainer
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    singularity-container \
+    apptainer \
+    parallel \
+    && rm -rf /var/lib/apt/lists/*
+
+# 5. 让普通用户也能跑 singularity（生产环境常见需求）
+RUN echo "user.maxUserNamespaces=10000" >> /etc/singularity/singularity.conf || true
+
+# 6. 启动时默认激活 snakemake 环境（方便直接 docker run -it yourimage）
+RUN echo "conda activate snakemake" >> ~/.bashrc
+SHELL ["/bin/bash", "-c"]
 
 ###############################################
 # 🔥 Automatically copy your whole repository
