@@ -101,7 +101,7 @@ RUN R -e "remotes::install_github('dmcable/spacexr', dependencies=TRUE, upgrade=
 
 
 # spatialDWLS (now safe)
-RUN R -e "remotes::install_github('ggorman/DWLS', dependencies=TRUE, upgrade=FALSE)"
+RUN R -e "remotes::install_github('JEFworks-Lab/DWLS', dependencies=TRUE, upgrade=FALSE)"
 
 
 # Giotto (3.1.0)
