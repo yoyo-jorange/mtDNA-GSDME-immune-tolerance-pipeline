@@ -79,6 +79,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     liblapack-dev libblas-dev pkg-config \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Patch for RCTD — fix BLAS/LAPACK linking issues
+RUN echo "FLIBS=-lblas -llapack" >> /usr/lib/R/etc/Makeconf
+
+# Install spam and glmnet manually (RCTD critical deps)
+RUN R -e "install.packages('spam', repos='https://cloud.r-project.org')"
+RUN R -e "install.packages('glmnet', repos='https://cloud.r-project.org')"
+
+
 # RCTD
 RUN R -e "remotes::install_github('dmcable/RCTD', dependencies=TRUE, upgrade=FALSE)"
 
