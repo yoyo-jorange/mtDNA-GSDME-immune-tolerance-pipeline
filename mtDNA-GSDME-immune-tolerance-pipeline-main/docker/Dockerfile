@@ -97,7 +97,11 @@ RUN R -e "install.packages('remotes', repos='https://cloud.r-project.org')"
 RUN R -e "install.packages('devtools', repos='https://cloud.r-project.org')"
 
 # Ensure git & libgit2 are available (remotes backend)
-RUN apt-get update && apt-get install -y --no-install-recommends git libgit2-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    liblapack-dev libblas-dev pkg-config \
+    wget \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 
 # RCTD
