@@ -1,6 +1,11 @@
 ############ BASE IMAGE ——— rocker with full R toolchain ############
 FROM ghcr.io/rocker-org/r-ver:4.3.1
 
+# Fix Ubuntu source issues
+RUN sed -i '/jammy-backports/d' /etc/apt/sources.list && \
+    sed -i 's|http://archive.ubuntu.com/ubuntu|http://mirrors.aliyun.com/ubuntu|g' /etc/apt/sources.list && \
+    sed -i 's|http://security.ubuntu.com/ubuntu|http://mirrors.aliyun.com/ubuntu|g' /etc/apt/sources.list
+
 # Avoid tzdata prompt issue
 ENV DEBIAN_FRONTEND=noninteractive
 
