@@ -153,7 +153,7 @@ ENV CONDA_DIR=/opt/conda
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p $CONDA_DIR && \
     rm ~/miniconda.sh && \
-    $CONDA_DIR/bin/conda clean -tipsy
+    $CONDA_DIR/bin/conda clean --all -y
 ENV PATH="$CONDA_DIR/bin:$PATH"
 
 # 2. 创建专用的 snakemake conda 环境（推荐做法）
