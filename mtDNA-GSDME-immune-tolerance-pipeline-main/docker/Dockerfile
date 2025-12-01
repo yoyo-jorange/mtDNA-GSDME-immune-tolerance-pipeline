@@ -7,35 +7,34 @@ ENV DEBIAN_FRONTEND=noninteractive
 ###########################
 # System Dependencies
 ###########################
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ## basic compilers
-    build-essential \
-    gfortran \
-    cmake \
-    ## libraries for R / Bioconductor / Seurat / GSVA
-    libxml2-dev \
-    libssl-dev \
-    libcurl4-openssl-dev \
-    libfontconfig1-dev \
-    libharfbuzz-dev \
-    libfribidi-dev \
-    libfreetype6-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libtiff-dev \
-    libcairo2-dev \
-    libxt-dev \
-    libx11-dev \
-    libgsl-dev \
-    libgeos-dev \
-    libglpk-dev \
-    libgdal-dev \
-    libhdf5-dev \
-    ## python basics
-    python3 python3-dev python3-pip \
-    ## cleanup
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update --fix-missing && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        gfortran \
+        cmake \
+        libxml2-dev \
+        libssl-dev \
+        libcurl4-openssl-dev \
+        libfontconfig1-dev \
+        libharfbuzz-dev \
+        libfribidi-dev \
+        libfreetype6-dev \
+        libpng-dev \
+        libjpeg-dev \
+        libtiff-dev \
+        libcairo2-dev \
+        libxt-dev \
+        libx11-dev \
+        libgsl-dev \
+        libgeos-dev \
+        libglpk-dev \
+        libgdal-dev \
+        libhdf5-dev \
+        python3 python3-dev python3-pip \
+    || { echo "APT INSTALL FAILED — retrying"; apt-get update --fix-missing; apt-get install -y --no-install-recommends libpng-dev; } && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 
 
 ###########################
