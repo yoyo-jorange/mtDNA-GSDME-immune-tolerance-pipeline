@@ -171,8 +171,8 @@ RUN conda create -y -n snakemake python=3.11 snakemake=8.20.0 \
     tabulate \
     matplotlib \
     seaborn \
-    clusterstatus \
     && conda clean -afy
+
 
 
 # 3. 把 conda 环境加入 PATH（以后直接 snakemake 就能用）
