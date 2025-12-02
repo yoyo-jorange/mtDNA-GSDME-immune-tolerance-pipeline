@@ -157,9 +157,14 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 ENV PATH="$CONDA_DIR/bin:$PATH"
 
 # 2. 创建专用的 snakemake conda 环境（推荐做法）
-# accept Anaconda TOS first (required for non-interactive builds)
+# accept Anaconda TOS first
 RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
     conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
+# enable snakemake channels (minimal required fix)
+RUN conda config --add channels conda-forge && \
+    conda config --add channels bioconda && \
+    conda config --set channel_priority strict
 
 RUN conda create -y -n snakemake python=3.11 snakemake=8.20.0 \
     drmaa \
@@ -172,6 +177,7 @@ RUN conda create -y -n snakemake python=3.11 snakemake=8.20.0 \
     matplotlib \
     seaborn \
     && conda clean -afy
+
 
 
 
