@@ -157,8 +157,11 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 ENV PATH="$CONDA_DIR/bin:$PATH"
 
 # 2. 创建专用的 snakemake conda 环境（推荐做法）
+# accept Anaconda TOS first (required for non-interactive builds)
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
 RUN conda create -y -n snakemake python=3.11 snakemake=8.20.0 \
-    # 常用插件与依赖
     drmaa \
     graphviz \
     pydot \
@@ -166,12 +169,11 @@ RUN conda create -y -n snakemake python=3.11 snakemake=8.20.0 \
     requests \
     pandas \
     tabulate \
-    # 绘图支持（snakemake --report）
     matplotlib \
     seaborn \
-    # 集群提交常用
     clusterstatus \
     && conda clean -afy
+
 
 # 3. 把 conda 环境加入 PATH（以后直接 snakemake 就能用）
 ENV PATH="$CONDA_DIR/envs/snakemake/bin:$PATH"
