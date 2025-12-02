@@ -166,17 +166,17 @@ RUN conda config --add channels conda-forge && \
     conda config --add channels bioconda && \
     conda config --set channel_priority strict
 
-RUN conda create -y -n snakemake python=3.11 snakemake=8.20.0 \
+RUN conda create -y -n snakemake python=3.11 snakemake=8.14.0 \
     drmaa \
     graphviz \
     pydot \
     jinja2 \
-    requests \
     pandas \
     tabulate \
     matplotlib \
     seaborn \
     && conda clean -afy
+
 
 
 
