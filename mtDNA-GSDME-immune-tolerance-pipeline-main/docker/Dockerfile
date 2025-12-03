@@ -166,8 +166,7 @@ RUN conda config --add channels conda-forge && \
     conda config --add channels bioconda && \
     conda config --set channel_priority strict
 
-RUN conda create -y -n snakemake -c conda-forge python=3.10 \
-    snakemake=8.14.0 \
+RUN conda create -y -n snakemake -c conda-forge python=3.11 \
     drmaa \
     graphviz \
     pydot \
@@ -175,10 +174,6 @@ RUN conda create -y -n snakemake -c conda-forge python=3.10 \
     pandas \
     tabulate \
     && conda clean -afy
-
-
-
-
 
 # 3. 把 conda 环境加入 PATH（以后直接 snakemake 就能用）
 ENV PATH="$CONDA_DIR/envs/snakemake/bin:$PATH"
