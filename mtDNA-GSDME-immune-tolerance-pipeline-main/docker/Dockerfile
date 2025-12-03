@@ -181,10 +181,9 @@ ENV PATH="$CONDA_DIR/envs/snakemake/bin:$PATH"
 # 4. 可选：安装 singularity/apptainer（很多空间流程用 singularity 拉镜像）
 #    如果你服务器没有 fuse-overlayfs 权限，可以只装 apptainer
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    singularity-container \
-    apptainer \
     parallel \
     && rm -rf /var/lib/apt/lists/*
+
 
 # 5. 让普通用户也能跑 singularity（生产环境常见需求）
 RUN echo "user.maxUserNamespaces=10000" >> /etc/singularity/singularity.conf || true
